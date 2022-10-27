@@ -25,7 +25,7 @@
 
             <div class="container m-auto"> 
 
-                <h1 class="text-2xl leading-none text-gray-900 tracking-tight mt-3"> Account Setting </h1>
+                <h1 class="text-2xl leading-none text-gray-900 tracking-tight mt-3"><a href="/">Home </a> / Account Setting for <b> {{ user.username }} </b> </h1>
                 <ul class="mt-5 -mr-3 flex-nowrap lg:overflow-hidden overflow-x-scroll uk-tab">
                     <li class="uk-active"><a href="#">General</a></li>
                     <li><a href="#">Profile</a></li>
@@ -42,33 +42,24 @@
                         <p></p>
                     </div>
                     <div class="bg-white rounded-md lg:shadow-lg shadow col-span-2">
-    
-                       <div class="grid grid-cols-2 gap-3 lg:p-6 p-4">
-                           <div>
-                               <label for=""> First name</label>
-                               <input type="text" placeholder="Your name.." class="shadow-none bg-gray-100">
-                           </div>
-                           <div>
-                               <label for=""> Last name</label>
-                               <input type="text" placeholder="Your name.." class="shadow-none bg-gray-100">
-                            </div>
+                    <form action="" method="POST" enctype = "multipart/form-data">
+                        {% csrf_token %}    
+                       <div class="grid grid-cols-2 gap-3 lg:p-6 p-4"> 
+
                             <div class="col-span-2">
-                                <label for=""> Email</label>
-                                <input type="text" placeholder="Your name.." class="shadow-none bg-gray-100">
-                            </div>
-                            <div class="col-span-2">
-                                <label for="about">About me</label>  
-                                <textarea id="about" name="about" rows="3"  class="shadow-none bg-gray-100"></textarea>
+                                <label for="about"> BIO </label>  
+                                <textarea id="about" name="bio" rows="3"  class="shadow-none bg-gray-100"> {{ user_prof.bio }} </textarea>
                             </div> 
                             <div class="col-span-2">
                                 <label for=""> Location</label>
-                                <input type="text" placeholder="" class="shadow-none bg-gray-100">
+                                <input type="text" name="location" value="{{user_prof.location}}" placeholder="" class="shadow-none bg-gray-100">
                             </div>
                             <div>
-                               <label for=""> Working at</label>
-                               <input type="text" placeholder="" class="shadow-none bg-gray-100">
+                               <label for=""> Profile Image</label>
+                               <img width="200" height="200" src="{{user_prof.profileimg.url}}">
+                               <input type="file" placeholder="" value = "" name ="image"class="shadow-none bg-gray-100">
                             </div> 
-                            <div>
+                            {% comment %} <div>
                                <label for=""> Relationship </label>
                                <select id="relationship" name="relationship"  class="shadow-none bg-gray-100">
                                 <option value="0">None</option>
@@ -77,15 +68,16 @@
                                 <option value="3">Married</option>
                                 <option value="4">Engaged</option>
                               </select>
-                            </div>
+                            </div> {% endcomment %}
+
                        </div> 
     
                        <div class="bg-gray-10 p-6 pt-0 flex justify-end space-x-3">
-                           <button class="p-2 px-4 rounded bg-gray-50 text-red-500"> Cancel </button>
-                           <button type="button" class="button bg-blue-700"> Save </button>
+                           <button class="p-2 px-4 rounded bg-gray-50 text-red-500"><a href="/"> Cancel </a></button>
+                           <button type="submit" class="button bg-blue-700"> Save </button>
                        </div>
-    
-                    </div>
+                    </form>
+                </div>
 
                     <div>
                         <h3 class="text-xl mb-2"> Privacy</h3>
