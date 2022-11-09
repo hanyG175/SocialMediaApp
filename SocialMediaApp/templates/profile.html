@@ -27,7 +27,7 @@
 	<section>
 			<div class="feature-photo">
 				<figure><img src="{% static 'images/resources/timeline-1.jpg' %}" alt=""></figure>
-				<form method='POST' action=''>
+				<form method='POST' action='/follow'>
 					{% csrf_token %}
 					<div class="add-btn">
 					<span style="color: white; font-size: 27px; margin-right: 520px;"><b><u><a href="/">Home</a></u></b></span>
@@ -38,18 +38,27 @@
 					{% endif%}
 
 					{% if no_followers == 0 %}
-					<span style="color: white; font-size: 27px;"><b>No Followers</b></span>
-					{% else %}
 					<span style="color: white; font-size: 27px;"><b>{{no_followers}} Follower</b></span>
+					{% else %}
+					<span style="color: white; font-size: 27px;"><b>{{no_followers}} Followers</b></span>
 					{% endif%}
 
-					{% if no_posts == 0 %}
-					<span style="color: white; font-size: 27px;"><b>Not Following Anyone</b></span>
+					{% if no_following <= 1 %}
+					<span style="color: white; font-size: 27px;"><b>{{no_following}} Following</b></span>
 					{% else %}
-					<span style="color: white; font-size: 27px;"><b>{{no_posts}} Following</b></span>
+					<span style="color: white; font-size: 27px;"><b>{{no_following}} Followings</b></span>
 					{% endif%}
-					
-					<a href="" title="" data-ripple=""><button name='follow' style="background-color: #ffc0cb; border: #ffc0cb;">Follow</button></a>
+
+					<input type='hidden' name="follow" value ="{{ user.username }}" />
+					<input type='hidden' name="user" value ="{{ user_prof.user.username }}" />
+					{% if user.username ==  user_prof.user.username %}
+
+					<a href="/settings" title="" data-ripple=""><button type='button' style="background-color: #ffc0cb; border: #ffc0cb;">Account Settings </button></a>>
+
+					{% else %}
+					<a  title="" data-ripple=""><button type='submit' style="background-color: #ffc0cb; border: #ffc0cb;">{{ button_text }}</button></a>>
+
+					{% endif %}
 					
 					</div>
 				</form>

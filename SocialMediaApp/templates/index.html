@@ -172,7 +172,7 @@
                         <!-- profile -->
 
                         <a href="#">
-                            <img src="{{ profileimgurl }}" class="header-avatar" alt="">
+                            <img src="{{ profileimg.url }}" class="header-avatar" alt="">
                         </a>
                         <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
                             <ul>
@@ -273,7 +273,7 @@
                             
                                                 {% if post.likes == 1 %}
                                                 Liked by <strong>{{post.likes}}</strong> Person
-                                                {% elif post.likes == 0%}
+                                                {% elif post.likes == 0 %}
                                                 No Likes
                                                 {% else %}
                                                 Liked by <strong>{{post.likes}}</strong> Persons

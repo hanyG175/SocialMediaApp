@@ -9,11 +9,10 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='signin')
 def index(request):
-    
-    
+
     context = {
         'posts' : Post.objects.all() ,
-        
+        'profileimg' : Profile.objects.get(user = User.objects.get(username = request.user.username)).profileimg,
         'profiles' : Profile.objects.all()
     }
     
@@ -29,17 +28,17 @@ def signup(request):
             if User.objects.filter(email=email).exists():
                 messages.info(request, 'Email Taken')
                 return redirect('signup')
+        
             elif User.objects.filter(username=username).exists():
                 messages.info(request, 'Username Taken')
                 return redirect('signup')
             else:
                 user = User.objects.create_user(username=username, email=email, password=password)
                 user.save()
-                #log user in and redirect to settings page
+                #log user in and redirect to settings page:
                 user_login = auth.authenticate(username=username, password=password)
                 auth.login(request, user_login)
-
-                #create a Profile object for the new user
+                #create a Profile object for the new user:
                 user_model = User.objects.get(username=username)
                 new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
                 new_profile.save()
@@ -93,7 +92,6 @@ def settings(request):
 @login_required(login_url='signin') 
 def upload(request):
     if request.method == 'POST':
-        
         user = request.user.username
         image = request.FILES.get('image_upload')    
         caption = request.POST['caption']
@@ -128,12 +126,21 @@ def profile(request , pk):
     user_prof = Profile.objects.get(user=user_obj)
     no_posts = len(Post.objects.filter(user= pk))
     no_followers = len(FollowerCount.objects.filter(user=pk))
+    no_following = len(FollowerCount.objects.filter(follower=pk))
+    
+    
+    follower_exist = FollowerCount.objects.filter(follower=request.user.username,user=pk).first()
+    button_text = "UnFollow" if follower_exist else "Follow"
+    
+        
     context={
         'user_prof' : user_prof ,
         'user_obj' : user_obj, 
         'posts' : Post.objects.filter(user= pk),
         'no_posts':no_posts,
-        'no_followers': no_followers
+        'button_text': button_text,
+        'no_followers': no_followers,
+        'no_following': no_following
         }
     
     return render(request , 'profile.html',context)
@@ -143,10 +150,17 @@ def follow(request):
     if request.method == 'POST':
         username = request.user.username
         follower_name = request.POST['follow']
-        f_obj = FollowrCount(follower = follower_name , user = username)
-        return redirect('profile/<str:pk>')
+        user = request.POST['user']
+        
+        if FollowerCount.objects.filter(follower = follower_name , user = user ).first():
+            FollowerCount.objects.get(follower = follower_name , user = user).delete()
+            return redirect('/profile/' + user)
+        else:
+            f_obj = FollowerCount(follower = follower_name , user = user)
+            f_obj.save()
+            return redirect('/profile/'+user)
     else :
-        return redirect('profile/<str:pk>')   
+        return redirect('/')   
         
     
     
