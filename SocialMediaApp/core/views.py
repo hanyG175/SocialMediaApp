@@ -4,16 +4,44 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from .models import Profile , Post ,Like , FollowerCount
 from django.contrib.auth.decorators import login_required
-
+from itertools import chain
+import random 
 # Create your views here.
 
 @login_required(login_url='signin')
 def index(request):
+    
+    user_obj = User.objects.get(username = request.user.username)
+    user_prof = Profile.objects.get(user=user_obj)
 
+    user_following = FollowerCount.objects.filter(follower = request.user.username)
+    user_following_list = [ users.user for users in user_following ]
+    feed = [Post.objects.filter(user=usernames) for usernames in user_following_list]
+    
+    feed_list = list(chain(*feed)) 
+    
+    all_users = list(User.objects.all())
+    #list od all users except current user:
+    all_users.remove(list(User.objects.filter(username = request.user.username))[0])
+    
+    #list of people already followed:
+    user_following_list = [ User.objects.get(username = x.user) for x in user_following]
+    #list of user not followed:
+    user_suggestions = [x for x in list(all_users) if (x not in user_following_list)]
+    print(user_suggestions)
+    
+    profile_suggestions = [Profile.objects.filter(id_user = x.id) for x in user_suggestions]
+
+    random.shuffle(profile_suggestions)
+    suggestions = list(chain(*profile_suggestions))
+    
+    
     context = {
-        'posts' : Post.objects.all() ,
+        'posts' : feed_list ,
         'profileimg' : Profile.objects.get(user = User.objects.get(username = request.user.username)).profileimg,
-        'profiles' : Profile.objects.all()
+        'profiles' : Profile.objects.all(),
+        'suggestions':suggestions[:3],
+        'user_prof': user_prof,
     }
     
     return HttpResponse(render(request , 'index.html' , context ))
@@ -128,11 +156,9 @@ def profile(request , pk):
     no_followers = len(FollowerCount.objects.filter(user=pk))
     no_following = len(FollowerCount.objects.filter(follower=pk))
     
-    
     follower_exist = FollowerCount.objects.filter(follower=request.user.username,user=pk).first()
     button_text = "UnFollow" if follower_exist else "Follow"
-    
-        
+ 
     context={
         'user_prof' : user_prof ,
         'user_obj' : user_obj, 
@@ -148,7 +174,6 @@ def profile(request , pk):
 @login_required(login_url='signin') 
 def follow(request):
     if request.method == 'POST':
-        username = request.user.username
         follower_name = request.POST['follow']
         user = request.POST['user']
         
@@ -158,9 +183,37 @@ def follow(request):
         else:
             f_obj = FollowerCount(follower = follower_name , user = user)
             f_obj.save()
-            return redirect('/profile/'+user)
+            if request.META['HTTP_REFERER'] == 'http://127.0.0.1:8000/':
+                return redirect('/')
+            else:      
+                return redirect('/profile/'+user)
     else :
         return redirect('/')   
-        
+
+@login_required(login_url='signin') 
+def search(request):
     
+    user_object = User.objects.get(username = request.user.username)
+    user_profile = Profile.objects.get(user=user_object)
+   
+    if request.method == 'POST':
+        user_name = request.POST['username']
+        username_objs = User.objects.filter(username__icontains = user_name)
+        username_profiles =[ Profile.objects.filter(id_user = user.id) for user in  username_objs]
+        l = list(chain(*username_profiles))
+    
+    
+        context = {
+            'user_profile' : user_profile,
+            'results' : l,
+            'username' : request.POST['username']
+        }    
+        
+    return  render(request,"search.html",context)
+
+
+
+
+
+
     
