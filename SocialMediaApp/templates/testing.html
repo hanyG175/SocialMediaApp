@@ -1,0 +1,40 @@
+
+{% extends "master.html" %}
+
+{% block title %}
+Settings
+{% endblock %}
+
+{% block content %}
+<div class="container m-auto"> 
+
+    <h2 class="text-2xl leading-none text-gray-900 tracking-tight mt-3 mb-5">Account Settings for <b> {{ user.username }} </b> </h2>
+    <nav class="navbar navbar-expand-lg rounded-md navbar-light bg-light mb-3">
+        <div class="container-fluid">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item" >
+              <a class="nav-link " aria-current="page" href="/settings">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="privacy">Privacy</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Security</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Notification</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Social links</a>
+            </li>
+          </ul>
+        </div>
+    </nav>
+
+    {% block content2 %}
+    {%endblock%}
+
+
+
+</div >
+{% endblock %}

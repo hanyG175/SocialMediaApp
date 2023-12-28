@@ -17,16 +17,17 @@
     <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+
 </head>
 
 <body>
 
-            <header>
-                <div class="header_inner">
-                    <form action="/search" method = 'POST'>
+    <header>
+        <div class="header_inner">
+                <form action="/search" method = 'POST'>
                         {% csrf_token %}
                     <div class="left-side">
-                        <!-- Logo -->
+                    <!-- Logo -->
                         <div id="logo" class=" uk-hidden@s">
                             <a href="home.html">
                                 <b><h1 style="text-transform: uppercase;">Social Book</h1></b>
@@ -43,23 +44,23 @@
                         {% comment %} </div> {% endcomment %}
 
                     </div>
-                    </form>
+                </form>
                     <div class="right-side lg:pr-4">
-                         <!-- upload -->
+                    <!-- upload -->
                         <a href="#"
                             class="bg-pink-500 flex font-bold hidden hover:bg-pink-600 hover:text-white inline-block items-center lg:block max-h-10 mr-4 px-4 py-2 rounded shado text-white">
                             <ion-icon name="add-circle" class="-mb-1
                              mr-1 opacity-90 text-xl uilus-circle"></ion-icon> Upload Pics
                         </a>
-                         <!-- upload dropdown box -->
+                        <!-- upload dropdown box -->
                         <div uk-dropdown="pos: top-right;mode:click ; animation: uk-animation-slide-bottom-small" class="header_dropdown">
     
-                            <!-- notivication header -->
+                    <!-- notivication header -->
                             <div class="px-4 py-3 -mx-5 -mt-4 mb-5 border-b">
                                 <h4>Upload Pics</h4>
                             </div>
     
-                            <!-- notification contents -->
+                    <!-- notification contents -->
                             <div class="flex justify-center flex-center text-center">
     
                                 <div class="flex flex-col choose-upload text-center">
@@ -70,7 +71,7 @@
                                             <path d="M9 13h2v5a1 1 0 11-2 0v-5z" />
                                         </svg>
                                     </div>
-                                    <form action ='upload/' method ='POST' enctype="multipart/form-data">
+                    <form action ='upload/' method ='POST' enctype="multipart/form-data">
                                         {% csrf_token %}
                                     <p class="my-3 leading-6"> Upload pics <br> please upload here ..
                                     </p>
@@ -113,27 +114,64 @@
                             </div>
                         </div>
                         
-<!-- Notification -->
+                    <!-- Notification -->
 
                         <a href="#" class="header-links-item">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none"><path d="M12 22a2.02 2.02 0 0 1-2.01-2h4a2.02 2.02 0 0 1-.15.78a2.042 2.042 0 0 1-1.44 1.18h-.047A1.922 1.922 0 0 1 12 22zm8-3H4v-2l2-1v-5.5a8.065 8.065 0 0 1 .924-4.06A4.654 4.654 0 0 1 10 4.18V2h4v2.18c2.579.614 4 2.858 4 6.32V16l2 1v2z" fill="currentColor"/></g></svg>
                         </a>
+
                         <div uk-drop="mode: click;offset: 4" class="header_dropdown">
-                            <h4
-                                class="-mt-5 -mx-5 bg-gradient-to-t from-gray-100 to-gray-50 border-b font-bold px-6 py-3">
-                                Notification </h4>
+                            <h4 class="-mt-5 -mx-5 bg-gradient-to-t from-gray-100 to-gray-50 border-b font-bold px-6 py-3">
+                                Notifications
+                            </h4>
                             <ul class="dropdown_scrollbar" data-simplebar>
                                 <li>
-                                    <a href="#">
-                                        <div class="drop_avatar"> <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="">
-                                        </div>
+                                    
+                                        {% for note in  notifications reversed %}
+                                        {% if note.type == 'L' or note.type == 'C'%}
+
+                                        <a href="{% url 'mark_as_read' note.notificationID %}">
+                                            
+                                            <div class="drop_avatar"> <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="">
+                                            </div>
                                         <div class="drop_content">
-                                            <p> <strong class="text-link" >Taiye</strong>  
-                                                <span class="text-link"> is following you  </span>
+                                            <p> <strong class="text-link" >User</strong>  
+                                                <span class="text-link"> {{note.notificationContent}}  </span>
                                             </p>
-                                            <span class="time-ago"> 2 hours ago </span>
+                                            <span class="time-ago">{{note.timestamp }} </span>
                                         </div>
-                                    </a>
+                                        </a>
+
+                                        {% elif note.type == 'F'%}
+                                        <a >
+                                            <div class="drop_avatar"> <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="">
+                                            </div>
+                                        <div class="drop_content">
+                                            <p>
+                                                <div class=" grid-cols-1" >
+                                                    <div class="col-span-1">
+                                                    <span class="text-link"><strong > {{note.notificationContent}}</strong>   </span>
+                                                    </div>
+                                                   
+                                                <div class=" grid-cols-2" >
+                                                    <div>
+                                                <form action="{% url 'accept_invitation' note.notificationID %}" method="get">
+                                                    <Button type="submit" id="inviteButton"  class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> Accept </Button>
+                                                </form>
+                                            </div>
+                                            <div>
+                                               <form action="#" method="get">
+                                                <Button type="submit" id="inviteButton"  class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> Refuse </Button>
+                                            </form>
+                                            </div>
+                                        </div>
+                                        </div>
+                                            </p>
+                                            <span class="time-ago">{{note.timestamp }} </span>
+                                        </div>
+                                        </a>
+                                        {% endif %}
+                                    {% endfor%}
                                 </li>
                                 
 
@@ -141,9 +179,9 @@
                             <a href="#" class="see-all">See all</a>
                         </div> 
 
-<!-- Messages -->
+                    <!-- Messages -->
 
-                        {% comment %} <a href="#" class="header-links-item">
+                     <a href="#" class="header-links-item">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="0.5em" height="0.5em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/></g></svg>
                         </a>
                         <div uk-drop="mode: click;offset: 4" class="header_dropdown">
@@ -166,9 +204,9 @@
 
                             </ul>
                             <a href="#" class="see-all">See all</a>
-                        </div> {% endcomment %}
+                        </div>
 
-                        <!-- profile -->
+                    <!-- profile -->
 
                         <a href="#">
                             <img src="{{ profileimg.url }}" class="header-avatar" alt="">
@@ -182,9 +220,9 @@
                             </ul>
                         </div>
 
-                    </div>
                 </div>
-            </header>
+            </div>
+        </header>
 
             <div class="container m-auto">
 
@@ -205,18 +243,18 @@
                                 <div class="flex flex-1 items-center space-x-4">
                                     <a href="#">
                                         {% for profile in profiles %}
-                                        {% if post.user == profile.user.username %}
+                                        {% if post.0.user == profile.user %}
                                         <div class="bg-gradient-to-tr from-yellow-600 to-pink-600 p-0.5 rounded-full">  
                                             <img src="{{ profile.profileimg.url }}" class="bg-gray-200 border border-white rounded-full w-8 h-8">
                                         </div>
                                         {% endif %}
                                         {% endfor %}
                                     </a>
-                                    <span class="block capitalize font-semibold "><a href="profile/{{ post.user }}">@{{ post.user }} </a></span>
+                                    <span class="block capitalize font-semibold "><a href="profile/{{ post.0.user.id }}">@{{ post.0.user }} </a></span>
                                 </div>
                               <div>
                                 <a href="#"> <i class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 "></i> </a>
-                                <div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100  " uk-drop="mode: hover;pos: top-right">
+                            <div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100  " uk-drop="mode: hover;pos: top-right">
                               
                                     <ul class="space-y-1">
                                       <li> 
@@ -254,62 +292,93 @@
                             </div>
     
                             <div uk-lightbox>
-                                <a href="{{ post.image.url }}">  
-                                    <img src="{{ post.image.url }}" alt="">
+                                <a href="{{ post.0.image.url }}">  
+                                    <img src="{{ post.0.image.url }}" alt="">
                                 </a>
                             </div>
                             
     
-                            <div class="py-3 px-4 space-y-3"> 
+                            <div class="py-3 container px-4 space-y-3"> 
                                
-                                <div class="flex space-x-4 lg:font-bold">
-                                    <a href="/like?post_id={{post.id}}" class="flex items-center space-x-2">
+                                <div class="flex row space-x-4 lg:font-bold">
+                                    <a href="/like?post_id={{post.0.postID}}" class="flex items-center space-x-2">
                                         <div class="p-2 rounded-full text-black">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="25" height="25" class="">
                                                 <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
                                             </svg>
-                                            <p>
+                                            {% comment %} <p>
                             
-                                                {% if post.likes == 1 %}
-                                                Liked by <strong>{{post.likes}}</strong> Person
-                                                {% elif post.likes == 0 %}
+                                                {% if post.1 == 1 %}
+                                                Liked by <strong>{{post.1}}</strong> Person
+                                                {% elif post.1 == 0 %}
                                                 No Likes
                                                 {% else %}
-                                                Liked by <strong>{{post.likes}}</strong> Persons
+                                                Liked by <strong>{{post.1}}</strong> Persons
                                                 {% endif %}
                                                
-                                            </p>
+                                            </p> {% endcomment %}
                                         </div>
                                     </a>
-                                    <a href="/comment?post_id={{post.id}}" class="flex items-center space-x-2">
+                                    <a href="/comment?post_id={{post.0.postID}}" class="flex items-center space-x-2">
                                         <div class="p-2 rounded-full text-black">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="25" height="25" class="">
                                                 <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd" />
                                             </svg>
-                                        </div>
-                                        
+                                        </div> 
                                     </a>
-                                    <a href="{{post.image.url}}" class="flex items-center space-x-2 flex-1 justify-end" download>
+                                    <a href="{{post.0.image.url}}" class="flex items-center space-x-2 flex-1 justify-end fixed-download-button" download>
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="25" height="25" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v6h-2a.5.5 0 0 0-.354.854l2.5 2.5a.5.5 0 0 0 .708 0l2.5-2.5A.5.5 0 0 0 10.5 7.5h-2v-6z"/></g></svg>
                                         
                                     </a>
                                 </div>
+                               
 
                                  
-
-                                {% comment %} <div class="flex items-center space-x-3"> 
+                                {% if post.1 == 1 %}
+                                <div class="flex items-center space-x-3"> 
+                                    {% if user_prof == post.2.0 %}
                                     <div class="flex items-center">
-                                        <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white ">
-                                        <img src="{% static 'assets/images/avatars/avatar-4.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white  -ml-2">
-                                        <img src="{% static 'assets/images/avatars/avatar-2.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white  -ml-2">
+                                        <img src="{{ user_prof.profileimg.url }}" alt="" class="w-6 h-6 rounded-full border-2 border-white ">
                                     </div>
                                     <div class="">
-                                        Liked <strong> taiye</strong> and <strong> 209 Others </strong>
+                                        Liked by <strong> You Only </strong>
                                     </div>
-                                </div> {% endcomment %}
+                                    {% else %}
+                                    <div class="flex items-center">
+                                        <img src="{{ post.2.0.profileimg.url }}" alt="" class="w-6 h-6 rounded-full border-2 border-white ">
+                                    </div>
+                                    <div class="">
+                                        Liked by <strong> {{post.2.0.user.username }}  Only  </strong>
+                                    </div>
+                                    {%endif%}
+                                </div> 
+                                
+                                {% elif post.1 == 0 %}
+                                <div class="flex items-center space-x-3"> 
+                                    
+                                    <div class="">
+                                        No Likes
+                                    </div>
+                                </div> 
+                            
+                                {% else %}
+                               
+                                    <div class="flex items-center space-x-3"> 
+                                    {% for profile in post.2%}    
+                                        <div class="flex items-center">
+                                            <img src="{{profile.profileimg.url}}" alt="" class="w-6 h-6 rounded-full border-2 border-white ">
+                                        </div>
+                                    {% endfor %}
+                                        <div class="">
+                                            Liked by <strong>{{ post.2.0 }}</strong> and <strong> {{ post.1 }} Others </strong>
+                                        </div>
+                                    </div> 
 
+                                {% endif %}
+
+                
                                 <p>
-                                   <a href =""><strong> {{post.user}} </strong></a>  {{post.caption}}
+                                   <a href =""><strong> {{post.0.user}} </strong></a>  {{post.0.caption}}
                                 </p>
                                 {% comment %} <div class="border-t pt-4 space-y-4 ">
                                     <div class="flex">
@@ -447,7 +516,7 @@
                                         <img src="{% static 'assets/images/avatars/avatar-2.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white  -ml-2">
                                     </div>
                                     <div class="">
-                                        Liked <strong> Hany </strong> and <strong> 209 Others </strong>
+                                        Liked by <strong> Hany </strong> and <strong> 209 Others </strong>
                                     </div>
                                 </div>
 
@@ -770,26 +839,26 @@
                         <div class="bg-white  shadow-md rounded-md overflow-hidden">
 
                             <div class="bg-gray-50  border-b border-gray-100 flex items-baseline justify-between py-4 px-6 ">
-                                <h2 class="font-semibold text-lg">Users You Can Follow</h2>
+                                <h2 class="font-semibold text-lg">Users You Can Befriend</h2>
                                 <a href="#"> Refresh</a>
                             </div>
                             {% for profile in suggestions %}
-                            <form action="/follow" method="POST">
+                            <form action="/invite" method="POST">
                                 {% csrf_token %}
                             <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4 ">
                                 <div class="flex items-center justify-between py-3">
                                     <div class="flex flex-1 items-center space-x-4">
-                                        <a href="/profile/{{profile.user.username}}">
+                                        <a href="/profile/{{profile.user.id}}">
                                             <img src="{{profile.profileimg.url}}" class="bg-gray-200 rounded-full w-10 h-10">
                                         </a>
                                         <div class="flex flex-col">
-                                            <span class="block capitalize font-semibold"><a href="/profile/{{profile.user.username}}">{{profile.user.username}}</a></span>
+                                            <span class="block capitalize font-semibold"><a href="/profile/{{profile.user.id}}">{{profile.user.username}}</a></span>
                                             <span class="block capitalize text-sm"></span>
                                         </div>
                                     </div>
-                                    <input type='hidden' name="follow" value ="{{ user.username }}" />
-					                <input type='hidden' name="user" value ="{{ profile.user.username }}" />
-                                    <Button type="submit" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> Follow </Button>
+                                    <input type='hidden' name="creator" value ="{{ user }}" />
+					                <input type='hidden' name="friend" value ="{{ profile.user }}" />
+                                    <Button type="submit" id="inviteButton"  class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> Invite </Button>
                                 </div>
                             </div>
                         </form>
@@ -824,7 +893,18 @@
     <script src="{% static 'assets/js/simplebar.js' %}"></script>
     <script src="{% static 'assets/js/custom.js' %}"></script>
 
-
+    <script>
+        function handleInvitation() {
+            // Simulate an asynchronous process (you would replace this with your actual logic)
+            setTimeout(function() {
+                // Assuming the invitation is successful
+                document.getElementById('inviteButton').innerText = 'Invited';
+                document.getElementById('inviteButton').setAttribute('disabled', 'true');
+                document.getElementById('inviteButton').classList.remove('btn-primary');
+                document.getElementById('inviteButton').classList.add('btn-secondary');
+            }, 2000);  // Simulating a delay of 2 seconds
+        }        
+    </script>
     <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>
 </body>
 

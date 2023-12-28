@@ -1,179 +1,182 @@
+
+{% extends "master.html"%}
 {% load static %}
+{%block title%}Profile - {{user_prof.user}}{%endblock%}
+{% block stats%}
 
-<!DOCTYPE html>
-<html lang="en">
-
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
-	<title>Profile - {{user_prof.user}}</title>
-   <!-- <link rel="icon" href="images/fav.png" type="image/png" sizes="16x16"> -->
-    
-    <link rel="stylesheet" href="{% static 'css/main.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/main.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/color.css' %}">
     <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+{% endblock%}
 
-</head>
-<body>
-<!--<div class="se-pre-con"></div>-->
-<div class="theme-layout">
+{% block content%}
+	<div class=" container grid grid-cols-2 gap-3 lg:p-6 p-4 pt-0 rounded-md "> 
+		<div class="col-span-2">
+			<div class=" mx-auto rounded-md shadow">
+				<div class="card mb-3">
+					<img src="{% static 'images/resources/timeline-1.jpg' %}" class="card-img-top shadow" alt="...">
+					<div class="card-body">
+						
+					  <form method='POST' action='/follow'>
+						{% csrf_token %}
+						<div class="add-btn" style="position:relative;top: 10px; left: 400px;  ">
+						{% if no_posts == 0 %}
+						<span style="color: black; font-size: 20px;"><b>No Post</b></span>
+						{% else %}
+						<span style="color: black; font-size: 20px;"><b>{{no_posts}} Post</b></span>
+						{% endif%}
+						{% if no_followers <= 1 %}
+						<span style="color: black; font-size: 20px;"><b>{{no_followers}} Follower</b></span>
+						{% else %}
+						<span style="color: black; font-size: 20px;"><b>{{no_followers}} Followers</b></span>
+						{% endif%}
+						{% if no_following <= 1 %}
+						<span style="color: black; font-size: 20px;"><b>{{no_following}} Following</b></span>
+						{% else %}
+						<span style="color: black; font-size: 20px;"><b>{{no_following}} Followings</b></span>
+						{% endif%}
+						<input type='hidden' name="friend" value ="{{ user.id }}" />
+						<input type='hidden' name="creator" value ="{{ user_prof.user.id }}" />
+						{% if user.username ==  user_prof.user.username %}
+						<button type='button' class="btn btn-outline-danger" style=""><a href="/settings" style="text-decoration: none; color: black;">Account Settings </a></button>
+						{% else %}
+						<a  title="" data-ripple=""><button type='submit' style="background-color: #ffc0cb; border: #ffc0cb;">{{ button_text }}</button></a>
+						{% endif %}
+						
+						</div>
+					</form>
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-lg-2 col-sm-3">
+								<div class=" mx-auto user-avatar" style="width: 180px; height: 180px; top: 20px; left: 70px; ">
+									
+										<img src="{{user_prof.profileimg.url}}" style="height: 100%; width: 100%; border-radius: 50%;" alt="">
+
+											<form class="edit-phto">
+												<a href="/settings"><i class="fa fa-camera-retro"></i></a>
+											
+											</form>
+								</div>
+							</div>
+						
+							<div class="col-lg-10 col-sm-9">
+								<div class="timeline-info">
+									<ul>
+										<li class="admin-name">
+										  <!--<span>Group Admin</span>-->
+										</li>
+										<!--<li>
+											<a class="" href="javascript:void(0)" title="" data-ripple="">Go live!</a>
+											<a class="" href="javascript:void(0)" title="" data-ripple="">Music</a>
+											<a class="" href="emporium/index-3.html" title="" data-ripple="">Emporium</a>
+											<a class="" href="fitness/index.html" title="" data-ripple="">Health Inspection</a>
+											<a class="" href="settings/account-setting.html" title="" data-ripple="">Settings</a>
+											<a class="" href="javascript:void(0)" title="" data-ripple="">Upload</a>
+											<a class="" href="time-line.html" title="" data-ripple="">time line</a>
+											<a class="" href="timeline-photos.html" title="" data-ripple="">Photos</a>
+											<a class="" href="timeline-videos.html" title="" data-ripple="">Videos</a>
+											<a class="" href="timeline-friends.html" title="" data-ripple="">Friends</a>
+											<a class="" href="timeline-groups.html" title="" data-ripple="">Groups</a>
+											<a class="" href="about.html" title="" data-ripple="">about</a>
+											<a class="" href="#" title="" data-ripple="">more</a>
 	
-	</div>
-	
-	<section>
-			<div class="feature-photo">
-				<figure><img src="{% static 'images/resources/timeline-1.jpg' %}" alt=""></figure>
-				<form method='POST' action='/follow'>
-					{% csrf_token %}
-					<div class="add-btn">
-					<span style="color: white; font-size: 27px; margin-right: 520px;"><b><u><a href="/">Home</a></u></b></span>
-					{% if no_posts == 0 %}
-					<span style="color: white; font-size: 27px;"><b>No Post</b></span>
-					{% else %}
-					<span style="color: white; font-size: 27px;"><b>{{no_posts}} Post</b></span>
-					{% endif%}
-
-					{% if no_followers <= 1 %}
-					<span style="color: white; font-size: 27px;"><b>{{no_followers}} Follower</b></span>
-					{% else %}
-					<span style="color: white; font-size: 27px;"><b>{{no_followers}} Followers</b></span>
-					{% endif%}
-
-					{% if no_following <= 1 %}
-					<span style="color: white; font-size: 27px;"><b>{{no_following}} Following</b></span>
-					{% else %}
-					<span style="color: white; font-size: 27px;"><b>{{no_following}} Followings</b></span>
-					{% endif%}
-
-					<input type='hidden' name="follow" value ="{{ user.username }}" />
-					<input type='hidden' name="user" value ="{{ user_prof.user.username }}" />
-					{% if user.username ==  user_prof.user.username %}
-
-					<a href="/settings" title="" data-ripple=""><button type='button' style="background-color: #ffc0cb; border: #ffc0cb;">Account Settings </button></a>>
-
-					{% else %}
-					<a  title="" data-ripple=""><button type='submit' style="background-color: #ffc0cb; border: #ffc0cb;">{{ button_text }}</button></a>>
-
-					{% endif %}
+														</li>-->
+									</ul>
+								</div>
+							</div>
+						</div>
 					
-					</div>
-				</form>
+				  	</div>
+					  <h5 class="card-text text-black" style="padding-left: 100px; ">User</h5>
 
-				<!-- <form class="edit-phto">
+				
+
+				{% comment %} <form class="edit-phto">
 					<i class="fa fa-camera-retro"></i>
 					<label class="fileContainer">
 						Upload Cover Photo
 					<input type="file"/>
 					</label>
-				</form> -->
-				<div class="container-fluid">
-					<div class="row merged">
-						<div class="col-lg-2 col-sm-3">
-							<div class="user-avatar">
-								<figure>
-									<img src="{{user_prof.profileimg.url}}" style="height: 250px; width: 100%;" alt="">
-									<form class="edit-phto">
-										<i class="fa fa-camera-retro"></i>
-										<label class="fileContainer">
-											<a href="/settings">Upload Profile Photo</a>
-										</label>
-									</form>
-								</figure>
-							</div>
-						</div>
-						<div class="col-lg-10 col-sm-9">
-							<div class="timeline-info">
-								<ul>
-									<li class="admin-name">
-									  <h5 style="color: black;white-space: nowrap; width: 110px; font-size: 27px;"><b>@{{user_prof.user}}</b><!--<i class="fa fa-check-circle" style="color: #48dbfb;" aria-hidden="true"></i>--></h5>
-									  <!--<span>Group Admin</span>-->
-									</li>
-									<!--<li>
-										<a class="" href="javascript:void(0)" title="" data-ripple="">Go live!</a>
-										<a class="" href="javascript:void(0)" title="" data-ripple="">Music</a>
-										<a class="" href="emporium/index-3.html" title="" data-ripple="">Emporium</a>
-										<a class="" href="fitness/index.html" title="" data-ripple="">Health Inspection</a>
-										<a class="" href="settings/account-setting.html" title="" data-ripple="">Settings</a>
-										<a class="" href="javascript:void(0)" title="" data-ripple="">Upload</a>
-										<a class="" href="time-line.html" title="" data-ripple="">time line</a>
-										<a class="" href="timeline-photos.html" title="" data-ripple="">Photos</a>
-										<a class="" href="timeline-videos.html" title="" data-ripple="">Videos</a>
-										<a class="" href="timeline-friends.html" title="" data-ripple="">Friends</a>
-										<a class="" href="timeline-groups.html" title="" data-ripple="">Groups</a>
-										<a class="" href="about.html" title="" data-ripple="">about</a>
-										<a class="" href="#" title="" data-ripple="">more</a>
+				</form> {% endcomment %}
 
-									</li>-->
-								</ul>
-							</div>
-						</div>
-					</div>
+
 				</div>
-			</div>
-		</section><!-- top area -->
-		<section>
-			<div class="bio">
-				<h3>
-				{{user_prof.bio}}
-				</h3>
-			</div>
-		</section>
+		</div><!-- top area -->
 		
-	<section>
-		<div class="gap gray-bg">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="row" id="page-contents">
-							<div class="col-lg-3">
-								<aside class="sidebar static">
-									
-									
-									
-								</aside>
-							</div><!-- sidebar -->
-							
 
-
-							<div class="col-lg-6">
-								<div class="central-meta">
-									<ul class="photos">
-									{% for post in posts%}
-										
-									<li>
-									<a class="strip" href="{{post.image.url}}" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
-										<img src="{{post.image.url}}" style="height: 250px; width: 300px;" alt=""></a>
-									</li>
-
-									{% endfor %}
-
-									</ul> 
-									
-									<!--<div class="lodmore"><button class="btn-view btn-load-more"></button></div>-->
-								</div><!-- photos -->
-							</div><!-- centerl meta -->
-							<div class="col-lg-3">
-								<aside class="sidebar static">
-									
-								</aside>
-							</div><!-- sidebar -->
-						</div>	
-					</div>
+<ul class="nav nav-tabs bg-gray-100 nav-lg rounded-t-md" id="myTab" role="tablist">
+	<li class="nav-item" role="presentation">
+	  <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
+	</li>
+	<li class="nav-item" role="presentation">
+	  <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Posts</button>
+	</li>
+	<li class="nav-item" role="presentation">
+	  <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">About</button>
+	</li>
+	
+  </ul>
+  <div class="tab-content bg-white rounded-b-lg" id="myTabContent">
+	<div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+		
+		<div  class="row row-cols-1 mt-0 row-cols-md-2 p-4 g-4">
+			<div class="col">
+			<div class="card shadow text-center mb-3" style="max-width: 18rem;">
+				<div class="card-header">
+				  Bio
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">{{user_prof.bio}}</h5>
+				  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+				</div>
+				<div class="card-footer text-body-secondary">
+					<a href="" >See More</a>
 				</div>
 			</div>
-		</div>	
-	</section>
+		</div>
+		<div class="col">
+			<div class="card shadow text-center  mb-3" style="max-width: 18rem;">
+				
+				<div class="card-body ">
+				  <h5 class="card-title">Friends</h5>
+				  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+				</div>
+				<div class="card-footer text-body-secondary">
+					<a href="" >See More</a>
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
+	<div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+		<div class="row row-cols-1 mt-0 row-cols-md-2 p-4 g-4">
+					
+				{% for post in posts%}
+			<div class="col">		
+				<div class="card mb-3 pr-0 shadow">
+				<img src="{{post.image.url}}" class="card-img-top" alt="">
+				<div class="card-body">
+				<p class="card-text text-black">{{post.caption}}</p>
+				<p class="card-text"><small class="text-body-secondary">Last updated: {{post.created}}</small></p>
+				</div>
+				</div>
+			</div>	
+				{%endfor%}
+			
 
+		</div>
+
+	</div>
+	<div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+	</div>
 	
+</div>
+</div>
+</div>
+</div>
 	
-	<script data-cfasync="false" src="{% static '../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js' %}"></script><script src="{% static 'js/main.min.js' %}"></script>
-	<script src="{% static 'js/script.js' %}"></script>
-
-</body>	
-
-
-</html>
+{%endblock%}

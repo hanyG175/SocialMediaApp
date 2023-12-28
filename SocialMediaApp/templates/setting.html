@@ -1,164 +1,118 @@
-{% load static %}
+{% extends "testing.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{% static 'assets/images/favicon.png' %}" rel="icon" type="image/png">
-    <title>Settings</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+             
+{% block content2%}               
+                    <h3 class="text-xl mb-2" font-family = "poppins"> Complete Your Virtual Persona...</h3>
+                    <p></p>
 
-</head>
-
-<body>
-
-
-       
-
-          
-
-            <div class="container m-auto"> 
-
-                <h1 class="text-2xl leading-none text-gray-900 tracking-tight mt-3"><a href="/">Home </a> / Account Setting for <b> {{ user.username }} </b> </h1>
-                <ul class="mt-5 -mr-3 flex-nowrap lg:overflow-hidden overflow-x-scroll uk-tab">
-                    <li class="uk-active"><a href="#">General</a></li>
-                    <li><a href="#">Profile</a></li>
-                    <li><a href="#">Privacy</a></li>
-                    <li><a href="#">Notification</a></li>
-                    <li><a href="#">Social links</a></li>
-                    <li><a href="#">Billing</a></li>
-                    <li><a href="#">Security</a></li>
-                </ul>
-
-                <div class="grid lg:grid-cols-3 mt-12 gap-8">
-                    <div>
-                        <h3 class="text-xl mb-2"> Basic</h3>
-                        <p></p>
-                    </div>
-                    <div class="bg-white rounded-md lg:shadow-lg shadow col-span-2">
+            <div class="bg-white rounded-md lg:shadow-lg shadow col-span-2">
+                        
                     <form action="" method="POST" enctype = "multipart/form-data">
                         {% csrf_token %}    
                        <div class="grid grid-cols-2 gap-3 lg:p-6 p-4"> 
+                        
 
-                            <div class="col-span-2">
-                                <label for="about"> BIO </label>  
-                                <textarea id="about" name="bio" rows="3"  class="shadow-none bg-gray-100"> {{ user_prof.bio }} </textarea>
-                            </div> 
-                            <div class="col-span-2">
-                                <label for=""> Location</label>
-                                <input type="text" name="location" value="{{user_prof.location}}" placeholder="" class="shadow-none bg-gray-100">
+                         <div class="image-container mx-auto mb-3" style="width: 150px; height: 150px; overflow: hidden; position: relative;  ">
+                         <img  src="{{user_prof.profileimg.url}}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                         <div class="overlay" style = "position: absolute;top: 0;left: 0;width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;">
+                         <button type ="button" class="text-white" for="fileInput" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;" >
+                            <label for="fileInput" class="text-white" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; cursor: pointer;">
+
+                            Upload a Pic
+                        </label>
+
+                        </button>
+                            <input type="file" name = "image" id="fileInput" style="display:none;">
+                         </div>
+                         
+
+                        </div>
+
+                         <div >
+                            <div class ="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">User</span>
+                            <input type="text" name="username" value="{{user_prof.user.username}}"  class="form-control  shadow-none " disabled readonly >
+                            </div>
+                            <div class ="input-group ">
+                        <span class="input-group-text" id="basic-addon1">Email</span>                            
+                        <input type="text" name="email" value="{{user_prof.user.email}}" class="form-control  shadow-none " disabled readonly >
+                            </div>
+                        <a href="" style="text-decoration: none; color: #be185d;"><small>Would you like to change authentication settings?</small></a>
+                         </div> 
+                        <div>
+                            <label class="form-label"> What is your name?
+                            </label>
+                            <div class="form-floating">
+
+                                <input type="text" name="firstname" value="{{user_prof.firstName}}" class="form-control location shadow-none" >
+                    
+                                <label for="" class="form-label"> First Name</label>
+
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label"> What is your surname?
+                            </label>
+                            <div class="form-floating" >
+
+                              
+                                <input type="text" name="lastname" value="{{user_prof.lastName}}" class="form-control location shadow-none">
+                             
+            
+                                <label for="" class="form-label"> Last Name</label>
+
+                            </div>
+                        </div>
+                            <div >
+                                <label for="" class="form-label"> When were you born?</label>
+                                <input class="form-control location" type="text" name="birthdate" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="{{user_prof.birthDate}}">
+
+                            </div>
+
+                            <div >
+                                <label for="" class="form-label"> What is your gender?</label>
+                                <select class= "form-select" name="gender" id="gender" placeholder = "{{user_prof.gender}}">
+                                    <option selected>Choose...</option>
+                                    <option value="Female"> Female</option>
+                                    <option value="Male"> Male</option>
+                                </select>                            
                             </div>
                             <div>
-                               <label for=""> Profile Image</label>
-                               <img width="200" height="200" src="{{user_prof.profileimg.url}}">
-                               <input type="file" placeholder="" value = "" name ="image"class="shadow-none bg-gray-100">
-                            </div> 
-                            {% comment %} <div>
-                               <label for=""> Relationship </label>
-                               <select id="relationship" name="relationship"  class="shadow-none bg-gray-100">
-                                <option value="0">None</option>
-                                <option value="1">Single</option>
-                                <option value="2">In a relationship</option>
-                                <option value="3">Married</option>
-                                <option value="4">Engaged</option>
-                              </select>
-                            </div> {% endcomment %}
+                            <label for="" class="form-label"> Where are you from?</label>
+
+                            <div class=" form-floating "> 
+                                <input class="form-control location shadow-none" type="text" name="location" value="{{user_prof.location}}">
+                                <label for="" class="form-label"> Location</label>
+                            </div>
+                            </div>
+
+                            <div>
+                            <label class="form-label"> Your phone number?</label>
+
+                            <div class=" form-floating ">
+                
+                                    <input class="form-control location shadow-none" type="text" name="phoneNumber" value="{{user_prof.phoneNumber}}" >
+                                    <label class="form-label" > Phone Number</label>
+                                   
+                            </div>
+                        </div>
+                            <div class="col-span-2 mb-3">
+                                <label for="about" class="form-label"> Tell us your story:</label>  
+                                <textarea class="form-control location shadow-non" id="about" name="bio" rows="3" > {{ user_prof.bio }} </textarea>
+                            </div>
 
                        </div> 
     
                        <div class="bg-gray-10 p-6 pt-0 flex justify-end space-x-3">
-                           <button class="p-2 px-4 rounded bg-gray-50 text-red-500"><a href="/"> Cancel </a></button>
+                           <button class="btn btn-secondary"><a href="/" style="text-decoration: none; color: white;"> Cancel </a></button>
                            <button type="submit" class="button bg-blue-700"> Save </button>
                        </div>
                     </form>
-                </div>
-
-                    <div>
-                        <h3 class="text-xl mb-2"> Privacy</h3>
-                        <p> </p>
-                    </div>
-                    <div class="bg-white rounded-md lg:shadow-lg shadow lg:p-6 p-4 col-span-2">
-
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h4> Who can follow me ?</h4>
-                                <div>  </div>
-                            </div>
-                            <div class="switches-list -mt-8 is-large">
-                                <div class="switch-container">
-                                    <label class="switch"><input type="checkbox"><span class="switch-button"></span> </label>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h4> Show my activities ?</h4>
-                                <div>  </div>
-                            </div>
-                            <div class="switches-list -mt-8 is-large">
-                                <div class="switch-container">
-                                    <label class="switch"><input type="checkbox" checked><span class="switch-button"></span> </label>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h4> Search engines?</h4>
-                                <div>  </div>
-                            </div>
-                            <div class="switches-list -mt-8 is-large">
-                                <div class="switch-container">
-                                    <label class="switch"><input type="checkbox"><span class="switch-button"></span> </label>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h4> Allow Commenting?</h4>
-                                <div>  </div>
-                            </div>
-                            <div class="switches-list -mt-8 is-large">
-                                <div class="switch-container">
-                                    <label class="switch"><input type="checkbox"><span class="switch-button"></span> </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    </div>
-                    <br>
-
-                </div>
+  
 
             </div>
             
-        </div>
-
-    </div>
-
-
+{%endblock%}
     
 
- <!-- Scripts
-    ================================================== -->
-    <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>  
-    <script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'assets/js/uikit.js' %}"></script>
-    <script src="{% static 'assets/js/simplebar.js' %}"></script>
-    <script src="{% static 'assets/js/custom.js' %}"></script>
-
-
-    <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>
-</body>
-
-</html>
+ 
